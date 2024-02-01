@@ -5,10 +5,11 @@ from random import randint
 
 # class for the enemies (which will be just circles)
 class Enemy:
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, speed):
         self.x = x
         self.y = y
         self.radius = radius
+        self.speed = speed
 
     def getX(self):
         return self.x
@@ -18,6 +19,9 @@ class Enemy:
     
     def getRadius(self):
         return self.radius
+    
+    def getSpeed(self):
+        return self.speed
 
 
 # pygame setup
@@ -30,7 +34,7 @@ y_pos = 800
 enemies = []
 
 for i in range(0, 5):
-    enemies.append(Enemy(randint(25, 720), 25, 25))
+    enemies.append(Enemy(randint(25, 695), 25, 25, randint(3, 6)))
 
 while running:
     # poll for events
@@ -44,8 +48,12 @@ while running:
 
     # DRAW ENEMIES
     for i in range(0, 5):
+        if enemies[i].y > 875:
+            enemies[i].y = 25
+            enemies[i].x = randint(25, 695)
+            enemies[i].speed = randint(3, 6)
         pygame.draw.circle(screen, "red", (enemies[i].getX(), enemies[i].getY()), enemies[i].getRadius())
-        enemies[i].y += 5
+        enemies[i].y += enemies[i].getSpeed()
 
     # RENDER YOUR GAME HERE
     ship = pygame.Rect(x_pos, y_pos, 50, 50)
