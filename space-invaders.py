@@ -1,5 +1,24 @@
 # Example file showing a basic pygame "game loop"
 import pygame
+from random import randint
+
+
+# class for the enemies (which will be just circles)
+class Enemy:
+    def __init__(self, x, y, radius):
+        self.x = x
+        self.y = y
+        self.radius = radius
+
+    def getX(self):
+        return self.x
+    
+    def getY(self):
+        return self.y
+    
+    def getRadius(self):
+        return self.radius
+
 
 # pygame setup
 pygame.init()
@@ -8,6 +27,10 @@ clock = pygame.time.Clock()
 running = True
 x_pos = 335
 y_pos = 800
+enemies = []
+
+for i in range(0, 5):
+    enemies.append(Enemy(randint(25, 720), 25, 25))
 
 while running:
     # poll for events
@@ -18,6 +41,11 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
+
+    # DRAW ENEMIES
+    for i in range(0, 5):
+        pygame.draw.circle(screen, "red", (enemies[i].getX(), enemies[i].getY()), enemies[i].getRadius())
+        enemies[i].y += 5
 
     # RENDER YOUR GAME HERE
     ship = pygame.Rect(x_pos, y_pos, 50, 50)
