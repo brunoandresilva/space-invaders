@@ -12,6 +12,11 @@ class Enemy:
         self.radius = radius
         self.speed = speed
 
+    def reset(self):
+        self.x = randint(25, 695)
+        self.y = 25
+        self.speed = randint(3, 6)
+
     def getX(self):
         return self.x
     
@@ -98,18 +103,21 @@ while running:
     # DRAW ENEMIES
     for enemy in enemies:
         if enemy.y > 875:
-            enemy.y = 25
-            enemy.x = randint(25, 695)
-            enemy.speed = randint(3, 6)
+            enemy.reset()
         pygame.draw.circle(screen, "red", (enemy.getX(), enemy.getY()), enemy.getRadius())
         enemy.y += enemy.getSpeed()
 
     # DRAW BULLETS
     for bullet in bullets:
-        if bullet.getY() <= 0:
-            bullets.remove(bullet)
         pygame.draw.circle(screen, "yellow", (bullet.getX(), bullet.getY()), bullet.getRadius())
         bullet.y -= bullet.getSpeed()
+        for enemy in enemies:
+            if abs(bullet.getX() - enemy.getX()) <= 30 and abs(bullet.getY() - enemy.getY()) <= 30: # enemy radius = 25; bullet radius = 5; so it can have an offset of 30
+                if bullet in bullets:
+                    bullets.remove(bullet)
+                enemy.reset()
+        if bullet.getY() <= 0 and bullet in bullets:
+            bullets.remove(bullet)
 
     # RENDER YOUR GAME HERE
     ship = pygame.Rect(ship_x_pos, ship_y_pos, 50, 50)
@@ -124,9 +132,9 @@ while running:
         ship_x_pos -= 15 
     if keys[pygame.K_d] and ship_x_pos < 645:
         ship_x_pos += 15
-    if keys[pygame.K_m]:
-        bullets.append(Bullet(ship_x_pos, ship_y_pos))
-    if keys[pygame.K_x]:
+    if keys[pygame.K_m]: # TODO: change shoot key for something more intuitive
+        bullets.append(Bullet(ship_x_pos + 25, ship_y_pos))
+    if keys[pygame.K_x]: # TODO: change game over trigger when adding collisions
         writeText("You Lost! Press Enter to Start Again.", 350, 400, 20)
         pygame.event.clear()
         r = True
