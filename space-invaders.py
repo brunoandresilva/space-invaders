@@ -15,7 +15,7 @@ class Enemy:
     def reset(self):
         self.x = randint(25, 695)
         self.y = 25
-        self.speed = randint(3, 6)
+        self.speed = randint(1, 4)
 
     def getX(self):
         return self.x
@@ -70,7 +70,7 @@ def restartGame(enemies, ship_x, ship_y):
         enemy.x = randint(25, 695)
         enemy.y = 25
         enemy.radius = 25
-        enemy.speed = randint(3, 6)
+        enemy.speed = randint(1, 4)
     ship_x = 335
     ship_y = 800
     score = 0
@@ -83,6 +83,7 @@ def restartGame(enemies, ship_x, ship_y):
 pygame.init()
 screen = pygame.display.set_mode((720, 900))
 clock = pygame.time.Clock()
+pressed = False
 
 score = 0
 enemies_past = 0
@@ -92,7 +93,7 @@ ship_y_pos = 800
 enemies = []
 bullets = []
 for i in range(0, 5):
-    enemies.append(Enemy(randint(25, 695), 25, 25, randint(3, 6)))
+    enemies.append(Enemy(randint(25, 695), 25, 25, randint(2, 5)))
 
 while running:
     # poll for events
@@ -150,6 +151,8 @@ while running:
     ship = pygame.Rect(ship_x_pos, ship_y_pos, 50, 50)
     pygame.draw.rect(screen, (36, 14, 235), ship)
 
+    
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and ship_y_pos > 0:
         ship_y_pos -= 15 
@@ -159,8 +162,11 @@ while running:
         ship_x_pos -= 15 
     if keys[pygame.K_d] and ship_x_pos < 645:
         ship_x_pos += 15
-    if keys[pygame.K_m]: # TODO: change shoot key for something more intuitive
+    if keys[pygame.K_m] and not pressed: # TODO: decrease fire rate
         bullets.append(Bullet(ship_x_pos + 25, ship_y_pos))
+        pressed = True
+    if not keys[pygame.K_m]:
+        pressed = False
     if enemies_past > 3:
         screen.fill((235, 119, 110))
         writeText("You Lost!", 350, 400, 50, "black")
