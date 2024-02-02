@@ -49,12 +49,12 @@ class Bullet:
         return self.speed
 
     
-def writeText(string, coordx, coordy, fontSize):
-    screen.fill((235, 119, 110))
+def writeText(string, coordx, coordy, fontSize, text_color):
+    
   	#set the font to write with
     font = pygame.font.Font('freesansbold.ttf', fontSize) 
     #(0, 0, 0) is black, to make black text
-    text = font.render(string, True, (0, 0, 0))
+    text = font.render(string, True, text_color)
     #get the rect of the text
     textRect = text.get_rect()
     #set the position of the text
@@ -73,7 +73,10 @@ def restartGame(enemies, ship_x, ship_y):
         enemy.speed = randint(3, 6)
     ship_x = 335
     ship_y = 800
-    return enemies, ship_x, ship_y
+    score = 0
+    enemies_past = 0
+    return enemies, ship_x, ship_y, score, enemies_past
+
 
 
 # pygame setup
@@ -81,7 +84,8 @@ pygame.init()
 screen = pygame.display.set_mode((720, 900))
 clock = pygame.time.Clock()
 
-
+score = 0
+enemies_past = 0
 running = True
 ship_x_pos = 335
 ship_y_pos = 800
@@ -100,12 +104,34 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
 
+    # UPDATE SCORE AND ENEMIES PAST
+    writeText("SCORE: " + str(score), 50, 20, 20, "white")
+    writeText("ENEMIES PAST: " + str(enemies_past), 87, 40, 20, "white")
+
     # DRAW ENEMIES
     for enemy in enemies:
         if enemy.y > 875:
             enemy.reset()
+            enemies_past += 1
         pygame.draw.circle(screen, "red", (enemy.getX(), enemy.getY()), enemy.getRadius())
         enemy.y += enemy.getSpeed()
+        if abs(enemy.getX() - ship_x_pos) <= 30 and abs(enemy.getY() - ship_y_pos) <= 30:
+            screen.fill((235, 119, 110))
+            writeText("You Lost!", 350, 400, 50, "black")
+            writeText("Score: " + str(score), 350, 450, 50, "black")
+            writeText("Press Enter to Go Again!", 350, 500, 30, "black")
+            pygame.event.clear()
+            r = True
+            while r:
+                event = pygame.event.wait()
+                if event.type == KEYDOWN:
+                    if event.key == K_RETURN:
+                        enemies, ship_x_pos, ship_y_pos, score, enemies_past = restartGame(enemies, ship_x_pos, ship_y_pos)
+                        r = False
+                if event.type == pygame.QUIT:
+                    running = False
+                    r = False
+
 
     # DRAW BULLETS
     for bullet in bullets:
@@ -116,6 +142,7 @@ while running:
                 if bullet in bullets:
                     bullets.remove(bullet)
                 enemy.reset()
+                score += 10
         if bullet.getY() <= 0 and bullet in bullets:
             bullets.remove(bullet)
 
@@ -134,16 +161,22 @@ while running:
         ship_x_pos += 15
     if keys[pygame.K_m]: # TODO: change shoot key for something more intuitive
         bullets.append(Bullet(ship_x_pos + 25, ship_y_pos))
-    if keys[pygame.K_x]: # TODO: change game over trigger when adding collisions
-        writeText("You Lost! Press Enter to Start Again.", 350, 400, 20)
+    if enemies_past > 3:
+        screen.fill((235, 119, 110))
+        writeText("You Lost!", 350, 400, 50, "black")
+        writeText("Score: " + str(score), 350, 450, 50, "black")
+        writeText("Press Enter to Go Again!", 350, 500, 30, "black")
         pygame.event.clear()
         r = True
         while r:
             event = pygame.event.wait()
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
-                    enemies, ship_x_pos, ship_y_pos = restartGame(enemies, ship_x_pos, ship_y_pos)
+                    enemies, ship_x_pos, ship_y_pos, score, enemies_past = restartGame(enemies, ship_x_pos, ship_y_pos)
                     r = False
+            if event.type == pygame.QUIT:
+                running = False
+                r = False
 
     # flip() the display to put your work on screen
     pygame.display.flip()
