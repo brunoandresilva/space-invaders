@@ -93,12 +93,17 @@ ship_x_pos = 335
 ship_y_pos = 800
 enemies = []
 bullets = []
+star_coords = []
+
+for i in range(0, 200):
+    star_coords.append((randint(0, 720), randint(0, 900)))
+
 for i in range(0, 5):
     enemies.append(Enemy(randint(25, 695), 25, 25, randint(2, 5)))
 
 # creating image objects
 spaceship_img = pygame.image.load("./assets/spaceship.png").convert()
-enemy_img = pygame.image.load("./assets/enemy.png").convert()
+enemy_img = pygame.image.load("./assets/enemy_40.png").convert()
 
 
 while running:
@@ -110,6 +115,11 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
+
+    # DRAW BACKGROUND
+    for coord in star_coords:
+        pygame.draw.circle(screen, "yellow", coord, 2)
+
 
     screen.blit(spaceship_img, (ship_x_pos, ship_y_pos))
 
@@ -154,7 +164,7 @@ while running:
                 score += 10
         if bullet.getY() <= 0 and bullet in bullets:
             bullets.remove(bullet)
-            
+
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and ship_y_pos > 0:
