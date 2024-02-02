@@ -12,5 +12,4 @@ When the player looses, is redirected to a red screen letting him know he lost a
 ## To-Do
 - Implement shooting for the enemies
 - Change the background (maybe add some stars to make it look more like space)
-- Change the ship and enemies to real images and not just shapes (might be harder (?))
 - Add different types of enemies that give different amounts of score when killed

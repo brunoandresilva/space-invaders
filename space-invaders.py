@@ -82,6 +82,7 @@ def restartGame(enemies, ship_x, ship_y):
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((720, 900))
+pygame.display.set_caption('Space Invaders')
 clock = pygame.time.Clock()
 pressed = False
 
@@ -95,6 +96,11 @@ bullets = []
 for i in range(0, 5):
     enemies.append(Enemy(randint(25, 695), 25, 25, randint(2, 5)))
 
+# creating image objects
+spaceship_img = pygame.image.load("./assets/spaceship.png").convert()
+enemy_img = pygame.image.load("./assets/enemy.png").convert()
+
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -105,6 +111,8 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
 
+    screen.blit(spaceship_img, (ship_x_pos, ship_y_pos))
+
     # UPDATE SCORE AND ENEMIES PAST
     writeText("SCORE: " + str(score), 50, 20, 20, "white")
     writeText("ENEMIES PAST: " + str(enemies_past), 87, 40, 20, "white")
@@ -114,7 +122,7 @@ while running:
         if enemy.y > 875:
             enemy.reset()
             enemies_past += 1
-        pygame.draw.circle(screen, "red", (enemy.getX(), enemy.getY()), enemy.getRadius())
+        screen.blit(enemy_img, (enemy.getX(), enemy.getY()))
         enemy.y += enemy.getSpeed()
         if abs(enemy.getX() - ship_x_pos) <= 30 and abs(enemy.getY() - ship_y_pos) <= 30:
             screen.fill((235, 119, 110))
@@ -146,12 +154,7 @@ while running:
                 score += 10
         if bullet.getY() <= 0 and bullet in bullets:
             bullets.remove(bullet)
-
-    # RENDER YOUR GAME HERE
-    ship = pygame.Rect(ship_x_pos, ship_y_pos, 50, 50)
-    pygame.draw.rect(screen, (36, 14, 235), ship)
-
-    
+            
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] and ship_y_pos > 0:
