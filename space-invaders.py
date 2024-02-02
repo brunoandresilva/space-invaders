@@ -154,7 +154,7 @@ while running:
 
     # DRAW BULLETS
     for bullet in bullets:
-        pygame.draw.circle(screen, "yellow", (bullet.getX(), bullet.getY()), bullet.getRadius())
+        pygame.draw.circle(screen, "red", (bullet.getX(), bullet.getY()), bullet.getRadius())
         bullet.y -= bullet.getSpeed()
         for enemy in enemies:
             if abs(bullet.getX() - enemy.getX()) <= 30 and abs(bullet.getY() - enemy.getY()) <= 30: # enemy radius = 25; bullet radius = 5; so it can have an offset of 30
