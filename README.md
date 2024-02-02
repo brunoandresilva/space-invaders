@@ -10,7 +10,6 @@ When the player looses, is redirected to a red screen letting him know he lost a
 
 
 ## To-Do
-- Decrease the fire rate (if the player just holds **m** can pretty much just go left and right and kill everyone)
 - Implement shooting for the enemies
 - Change the background (maybe add some stars to make it look more like space)
 - Change the ship and enemies to real images and not just shapes (might be harder (?))
